@@ -6,38 +6,29 @@ public class BallPhysics : MonoBehaviour
 {
     [SerializeField] private float speed;
 
-    private Vector2 direction;
-    private Rigidbody2D rb;
+    private Vector3 direction;
+    private CircleCollider2D collider;
 
     private bool running;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        collider = GetComponent<CircleCollider2D>();
     }
 
     void Update()
     {
         if (running)
-            rb.MovePosition(rb.position + direction * Time.deltaTime * speed);
+            transform.position += direction * Time.deltaTime * speed;
+
+        RaycastHit2D[] hits = new RaycastHit2D[10];
+        if (collider.Raycast(direction, hits, 0.2f) > 0)
+        direction = Vector2.Reflect(direction, hits[0].normal);
     }
 
     public void Run(Vector3 startDirection)
     {
         direction = startDirection.normalized;
         running = true;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        direction = Vector2.Reflect(direction, collision.contacts[0].normal);
-        if (collision.contactCount > 1)
-        {
-            for (int i = 1; i < collision.contactCount; i++)
-            {
-                if (collision.contacts[i].normal != collision.contacts[0].normal)
-                    direction = Vector2.Reflect(direction, collision.contacts[i].normal);
-            }
-        }
     }
 }
