@@ -6,7 +6,7 @@ public class BallPhysics : MonoBehaviour
 {
     [SerializeField] private float speed;
 
-    private Vector3 direction;
+    private Vector2 direction;
     private Rigidbody2D rb;
 
     private bool running;
@@ -19,7 +19,7 @@ public class BallPhysics : MonoBehaviour
     void Update()
     {
         if (running)
-            rb.MovePosition(transform.position + direction * Time.deltaTime * speed);
+            rb.MovePosition(rb.position + direction * Time.deltaTime * speed);
     }
 
     public void Run(Vector3 startDirection)
